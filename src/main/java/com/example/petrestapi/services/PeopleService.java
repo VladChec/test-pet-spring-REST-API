@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,10 +38,17 @@ public class PeopleService {
     }
 @Transactional
     public void save(Person person){
-        peopleRepository.save(person);
+
+    enrichPerson(person);
+    peopleRepository.save(person);
 }
 
 
+    private void enrichPerson(Person person) {
+        person.setCreatedAt(LocalDateTime.now());
+        person.setUpdateAt(LocalDateTime.now());
+        person.setCreatedWho("ADMIN");
+    }
 //    @Transactional
 //    public void register(Person person) {
 ////        person.setPassword(bCryptPasswordEncoder.encode(person.getPassword()));

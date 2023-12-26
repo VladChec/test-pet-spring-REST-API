@@ -1,5 +1,6 @@
 package com.example.petrestapi.controllers;
 
+import com.example.petrestapi.dto.PersonDTO;
 import com.example.petrestapi.models.Person;
 import com.example.petrestapi.services.PeopleService;
 import com.example.petrestapi.util.PersonErrorResponse;
@@ -13,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -54,7 +56,7 @@ public class PeopleController {
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> create(@RequestBody @Valid Person person,
+    public ResponseEntity<HttpStatus> create(@RequestBody @Valid PersonDTO personDTO,
                                              BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             StringBuffer errorMsg = new StringBuffer();
@@ -69,9 +71,23 @@ public class PeopleController {
 
             throw new PersonNotCreatedException(errorMsg.toString());
          }
-            peopleService.save(person);
+            peopleService.save(convertToPerson(personDTO));
 
         return ResponseEntity.ok(HttpStatus.OK);
     }
+
+    private Person convertToPerson(PersonDTO personDTO) {
+        Person person = new Person();
+        person.setUsername(personDTO.getUsername());
+        person.setEmail(personDTO.getEmail());
+        person.setAge(personDTO.getAge());
+
+
+        return person;
+
+    }
+
+
+
 
 }
